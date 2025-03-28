@@ -1,0 +1,54 @@
+---
+title: "Using R for Statistical Analysis"
+subtitle: "Basic Level"
+author: "Michele Scandola"
+institute: "Dept. of Human Sciences $-$ University of Verona"
+date: today
+format:
+  revealjs:
+    incremental: true
+    scrollable: true
+    theme: moon
+    toc: true
+    footer: "R basics - M. Scandola - UniVR"
+editor: visual
+editor_options: 
+  chunk_output_type: console
+---
+
+## Some aspects about myself:
+
+- *Position:* Associate Professor @ Dept. of Human Sciences, UniVR
+- *Academic Sector:* PSIC-01/B – Neuropsychology and Cognitive Neuroscience
+- *Research Interests:*
+  - Body, action, space, and time representations and their influence on cognition.
+  - The influence of social disconnection on cognition.
+  - Metascience and methodology.
+
+## Why Use R as a PhD Student?
+
+- Free & Open-Source: No licensing costs, accessible to everyone.
+- Powerful for Data Analysis: Handles statistics, machine learning, and big data.
+- Reproducibility & Transparency: Ensures reproducible research with scripts and markdown.
+- Extensive Community & Support: Large user base, numerous online resources, and active forums.
+- Integration with Other Tools: Works with Python, SQL, and more.
+- Visualization & Reporting: Creates high-quality plots (ggplot2) and dynamic reports (R Markdown).
+- Customizability: Adaptable with thousands of packages for diverse research fields.
+- Automation: Streamlines repetitive tasks and data processing.
+- Strong Academic Adoption: Widely used in scientific research and publishing.
+- Version Control & Collaboration: Works well with GitHub for team projects.
+
+## Bullets
+
+When you click the **Render** button a document will be generated that includes:
+
+-   Content authored with markdown
+-   Output from executable code
+
+## Code
+
+When you click the **Render** button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{r}
+1 + 1
+```
