@@ -1,0 +1,2006 @@
+---
+title: "Using R for Statistical Analysis"
+subtitle: "Basic Level"
+author: "Michele Scandola"
+institute: "Dept. of Human Sciences $-$ University of Verona"
+date: today
+format:
+  revealjs:
+    incremental: true
+    scrollable: true
+    theme: moon
+    toc: true
+    toc-depth: 1
+    toc-title: Outline
+    footer: "R Basics | M. Scandola | UniVR | @scandle.bsky.social"
+execute:
+  echo: true
+editor: visual
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r, echo=FALSE}
+# Presentation for R for statistical analysis - basic level
+# for the PhD school of the University of Verona
+# First version, encoded by Michele Scandola
+# 02/04/2025
+
+rm(list=ls())
+
+library(fontawesome)
+library(qrcode)
+library(tidyverse)
+library(dplyr)
+library(knitr)
+library(afex)
+library(foreign)
+
+GimmeMSD <- function(y,digits=3,na.rm=TRUE,se=FALSE){
+  if(!se){
+      return(paste0(
+        round(mean(y,na.rm=na.rm),digits=digits),
+        " (",round(sd(y,na.rm=na.rm),digits=digits),")"
+      ))
+  }else{
+    return(paste0(
+      round(mean(y,na.rm=na.rm),digits=digits),
+      " (",round(se(y,na.rm=na.rm),digits=digits),")"
+    ))
+    }
+}
+```
+
+# About myself
+
+-   *Position:* Associate Professor \@ Dept. of Human Sciences, UniVR
+-   *Academic Sector:* PSIC-01/B -- Neuropsychology and Cognitive Neuroscience
+-   *Research Interests:*
+    -   Body, action, space, and time representations and their influence on cognition.
+    -   The influence of social disconnection on cognition.
+    -   Metascience and methodology.
+
+# Learning objectives
+
+*By the end of this session, you will be able to:*
+
+-   *Write and execute basic R scripts.*\
+-   *Import and manipulate datasets using R.*\
+-   *Perform fundamental statistical analyses.*\
+-   *Visualize data effectively with base R plots.*
+
+# About R
+
+## Why Use R as a PhD Student?
+
+::: columns
+::: {.column width="50%"}
+-   Free & Open-Source
+-   Interoperable
+-   Powerful for Data Analysis
+-   Reproducibility & Transparency
+-   Extensive Community & Support
+:::
+
+::: {.column width="50%"}
+-   Integration with Other Tools
+-   Visualization & Reporting
+-   Customizability
+-   Automation
+-   Strong Academic Adoption
+-   Version Control & Collaboration
+:::
+:::
+
+## How to donwload R and its interface
+
+Website: <https://www.r-project.org/>
+
+The default R GUI on Windows:
+
+![](imgs\RInterface-win.JPG){width="300"}
+
+The default R Interfaces on Mac and Linux is the Terminal.
+
+## What R Studio is adding to R?
+
+::: columns
+::: {.column width="50%"}
+-   User-Friendly Interface
+-   Script Management
+-   Data & Variable View
+-   Built-in Debugging Tools
+-   Powerful Visualization Support
+:::
+
+::: {.column width="50%"}
+-   R Markdown & Report Generation
+-   Visualization & Reporting
+-   Package Management
+-   Project Organization
+-   Shiny App Development
+:::
+:::
+
+## How to download R Studio and its inteface
+
+Website: <https://posit.co/products/open-source/rstudio/>
+
+![](imgs\rstudio-panes-labeled.jpeg){width="300"}
+
+## What is the `tidyverse`?
+
+The **tidyverse** is an opinionated collection of R packages designed for data science. All packages share an underlying design philosophy, grammar, and data structures.
+
+. . .
+
+*Key Features of the `tidyverse`*
+
+-   Consistent Grammar
+-   Pipes (`%>%` or `|>` ): Enables chaining operations for clean and efficient code.
+-   Tibble Data Frames: More user-friendly than base R's data.frame.
+
+## How to install `tidyverse`?
+
+```         
+install.packages("tidyverse")
+```
+
+::: columns
+::: {.column width="50%"}
+You can find an online book here: <https://r4ds.hadley.nz/>
+:::
+
+::: {.column width="50%"}
+```{r, echo=FALSE}
+plot(qr_code("https://r4ds.hadley.nz/"))
+```
+:::
+:::
+
+## Simple difference between base R and tidyverse
+
+```{r, echo=FALSE}
+# Generate sample data
+set.seed(123)
+group_A <- rnorm(30, mean = 5, sd = 1)  # Sample from normal distribution (mean=5, sd=1)
+group_B <- rnorm(30, mean = 6, sd = 1)  # Sample from normal distribution (mean=6, sd=1)
+
+DATA <- tibble(
+  group = rep(c("A", "B"), each = 30),
+  value = c(group_A, group_B)
+)
+
+kable(
+  aggregate(value ~ group, FUN = GimmeMSD, data = DATA),
+    caption = "Mean and standard deviations of simulated data"
+  )
+```
+
+. . .
+
+In base R:
+
+```{r, echo=TRUE}
+# Perform independent t-test
+t_test_result <- t.test(group_A, group_B, var.equal = TRUE)
+## this is equivalen:
+## t_test_result <- t.test(value ~ group, var.equal = TRUE, data = DATA)
+
+# Print results
+print(t_test_result)
+```
+
+. . .
+
+In `tidyverse`
+
+```{r, echo=TRUE}
+# Perform t-test using broom package
+library(broom)
+
+t_test_result <- DATA %>%
+  t.test(value ~ group, data = .) %>%
+  tidy()
+
+# Print results
+print(t_test_result)
+```
+
+# The R language for statistical computing
+
+## 
+
+R is a programming language specifically designed for data analysis and graphics.
+
+-   Dialect of S
+-   1988 - S2: RA Becker, JM Chambers, A Wilks
+-   1992 - S3: JM Chambers, TJ Hastie
+-   1998 - S4: JM Chambers
+-   R: initially written by Ross Ihaka and Robert Gentleman at Dep. of Statistics of University of Auckland, New Zealand during 1990s.
+-   Since 1997: international *R-core* team of 15 people with access to common CVS archive.
+
+. . .
+
+```{r}
+R.version.string
+```
+
+## R scripts
+
+R scripts are textual files saved with the `.R` extension.
+
+. . .
+
+This is a typical R script
+
+``` {.r code-line-numbers="|1-3|5-6|8-10|12-15|17-18|20-21|23|25-26"}
+## initial comments explaining what is doing the script
+## Author, Start Date - Last modification Date
+## version
+
+rm( list = ls() ) ## needed to "clean" the workspace's memory
+graphics.off()    ## needed to "clean" the graphics' memory
+
+library(tidyverse)## for tidyverse functions
+library(afex)     ## for linear models
+library(ggplot2)  ## for advanced graphics
+
+DATA <-           ## loading the dataset
+  read.csv(
+    "dataset.csv"
+  ) 
+
+summary(DATA)     ## a summary of the main characteristics of the dataset
+str(DATA)         ## the structure of the dataset
+
+## fitting the linear model
+mdl <- lm(value ~ group, data = DATA)
+
+anova( mdl )      ## hypothesis testing
+
+## plotting the results
+boxplot( value ~ group, data = DATA )
+```
+
+# The R Syntax
+
+## Variables
+
+-   named storage location
+-   the value is set by the user
+-   the value can be changed after being initially set
+
+. . .
+
+In naming variables you can use alphanumeric characters, dots (".") and underscores ("\_").
+
+You cannot use a number as first character.
+
+## 
+
+EXAMPLES:
+
+::: columns
+::: {.column width="50%"}
+-   `avgRT` `r fa(name = "check", fill = "green")`
+-   `_avrRT` `r fa(name = "check", fill = "green")`
+-   `.avgRT` `r fa(name = "check", fill = "green")`
+-   `avgRT3` `r fa(name = "check", fill = "green")`
+:::
+
+::: {.column width="50%"}
+-   `avg RT` `r fa(name = "xmark", fill = "red")`
+-   `#avrRT` `r fa(name = "xmark", fill = "red")`
+-   `avg-RT` `r fa(name = "xmark", fill = "red")`
+-   `3avgRT` `r fa(name = "xmark", fill = "red")`
+:::
+:::
+
+. . .
+
+It is case sensitive, so `avgRT` $\neq$ `avgrt`
+
+## 
+
+*To assign a value to a variable, you can use*
+
+``` {.r code-line-numbers="|1|3|5"}
+avgRT = 300
+
+avgRT <- 300
+
+300 -> avgRT
+```
+
+. . .
+
+```{r, echo=TRUE}
+avgRT = 300
+avgRT
+
+avgRT <- 300
+avgRT
+
+300 -> avgRT
+avgRT
+```
+
+## 
+
+*Different typologies of variables:*
+
+```{r, echo=TRUE}
+my_var <- 36
+class(my_var)
+```
+
+## 
+
+*Different typologies of variables:*
+
+```{r, echo=TRUE}
+my_var <- "hello"
+class(my_var)
+```
+
+## 
+
+*Different typologies of variables:*
+
+```{r, echo=TRUE}
+my_var <- TRUE
+class(my_var)
+```
+
+## 
+
+*Different typologies of variables:*
+
+```{r, echo=TRUE}
+my_var <- c(36, 74, 23, 34)
+class(my_var)
+
+my_var[2] + my_var[3]
+```
+
+## 
+
+*Different typologies of variables:*
+
+```{r, echo=TRUE}
+#| error: true
+my_var <- c("M", 74, 23, 34)
+class(my_var)
+
+my_var[2] + my_var[3]
+```
+
+## 
+
+*Different typologies of variables:*
+
+```{r, echo=TRUE}
+#| error: true
+my_var <- factor(c("M", "F", "F"))
+class(my_var)
+
+my_var[2] + my_var[3]
+```
+
+## 
+
+*Different typologies of variables:*
+
+```{r, echo=TRUE}
+my_var <- cbind(
+    c(1, 2, 3, 4),
+    5:8,
+    c(9, 10:12)
+  )
+
+class(my_var)
+```
+
+. . .
+
+```{r, echo=TRUE}
+my_var2 <- matrix(
+  1:12,
+  ncol = 3
+)
+
+class(my_var2)
+```
+
+. . .
+
+```{r}
+my_var
+
+my_var2
+```
+
+. . .
+
+```{r}
+my_var[2,3]
+
+my_var[2,]
+```
+
+. . .
+
+```{r, echo=TRUE}
+my_var3 <- matrix(
+  nrow = 4,
+  ncol = 3
+)
+
+class(my_var3)
+
+my_var3
+```
+
+## 
+
+*Different typologies of variables:*
+
+```{r, echo=TRUE}
+my_var <- data.frame(
+  age = c(27, 34, 19),
+  sex = c("M", "F", "F"),
+  RT = c(300, 123, 678)
+)
+class(my_var)
+```
+
+## 
+
+*Different typologies of variables:*
+
+```{r, echo=TRUE}
+my_var <- tibble(
+  age = c(27, 34, 19),
+  sex = c("M", "F", "F"),
+  RT = c(300, 123, 678)
+)
+class(my_var)
+```
+
+## 
+
+*Vectors*
+
+```{r}
+my_vector <- c(1, 2, 3, 4, 5)
+class(my_vector)
+length(my_vector)
+dim(my_vector)
+```
+
+## 
+
+*Vectors*
+
+```{r}
+my_vector <- 1:5
+class(my_vector)
+length(my_vector)
+dim(my_vector)
+```
+
+## 
+
+*Vectors*
+
+```{r}
+my_vector <- cbind(1, 2, 3, 4, 5)
+class(my_vector)
+length(my_vector)
+dim(my_vector)
+```
+
+## 
+
+*Vectors*
+
+We can select a subset from a vector
+
+```{r}
+my_vector[1:3]
+```
+
+. . .
+
+We can exclude a value from a vector
+
+```{r}
+my_vector[-1]
+```
+
+. . .
+
+We can select a non-contiguous subset from a vector
+
+```{r}
+my_vector[c(2,4)]
+```
+
+. . .
+
+We can exclude non-contiguous values from a vector
+
+```{r}
+my_vector[-c(2,4)]
+```
+
+. . .
+
+However, if we do not assign the new value to the vector, it does not change.
+
+```{r}
+my_vector
+```
+
+## 
+
+*Vectors*
+
+We can modify a specific element of a vector
+
+```{r}
+my_vector[2] <- my_vector[1] + my_vector[5]
+my_vector
+```
+
+. . .
+
+We can remove a specific element of a vector
+
+```{r}
+my_vector <- my_vector[-3]
+my_vector
+```
+
+## 
+
+*Data frame or tibbles*
+
+```{r}
+## generally, you obtain them by reading some external database
+set.seed(1)
+my_df <- data.frame(
+  age = round( rnorm(10, mean = 50, sd = 23) ),
+  sex = factor(c("M", "M", "M", "M", "M", "F", "F", "F", "F", "F")),
+  RT = rnorm(10, mean = 5, sd = 3) + rexp( 10, rate = 0.1 )
+)
+
+set.seed(1)
+my_tb <- tibble(
+  age = round( rnorm(10, mean = 50, sd = 23) ),
+  sex = factor(c("M", "M", "M", "M", "M", "F", "F", "F", "F", "F")),
+  RT = rnorm(10, mean = 5, sd = 3) + rexp( 10, rate = 0.1 )
+)
+```
+
+## 
+
+*Data frame or tibbles*
+
+We can print them entirely
+
+::: panel-tabset
+## Dataframe
+
+```{r}
+print(my_df, digits = 3)
+```
+
+## Tibble
+
+```{r}
+print(my_tb)
+```
+:::
+
+## 
+
+*Data frame or tibbles*
+
+We can access to a single column of a dataset.
+
+```{r}
+my_df$age
+
+my_df[,"age"]
+
+my_df[,1]
+```
+
+. . .
+
+We can access to a specific row or set of rows of a dataset.
+
+::: panel-tabset
+## Single row
+
+```{r}
+my_df[2,]
+```
+
+## Set of rows - Base R
+
+```{r}
+my_df[my_df$sex == "M",]
+```
+
+## Set of rows - `tidyverse` 1
+
+```{r}
+my_df %>% 
+  filter(sex == "M")
+```
+
+## Set of rows - `tidyverse` 2
+
+```{r}
+my_tb %>% 
+  filter(sex == "M")
+```
+:::
+
+## Practice!
+
+1.  Open the file "01-variables.R" and follow the given steps.
+2.  Once completed, upload your exercise to the Moodle course page.
+3.  We will hold a session to review and correct the exercise together.
+
+## 
+
+In R, there are several **special values** that can be assigned to variables.
+
+These values are commonly used in data analysis and programming to handle specific scenarios like missing data, infinite values, or undefined numbers.
+
+Here's a list of important special values in R.
+
+##  {.smaller}
+
+**1. `NA` - Not Available (Missing Values)**
+
+-   **Description:** Represents **missing** or **undefined** data.
+-   **Use case:** Used to indicate that a value is missing or unavailable in a dataset.
+
+. . .
+
+**Example:**
+
+```{r}
+x <- NA
+
+is.na(x)
+is.nan(x)
+is.infinite(x)
+is.null(x)
+```
+
+##  {.smaller}
+
+**2. `NaN` - Not a Number**
+
+-   **Description:** Represents an **undefined numerical result**, such as 0/0 or infinity minus infinity.
+-   **Use case:** Used when a mathematical operation returns an undefined result.
+
+. . .
+
+**Example:**
+
+```{r}
+x <- 0 / 0
+
+is.na(x)
+is.nan(x)
+is.infinite(x)
+is.null(x)
+```
+
+##  {.smaller}
+
+**3. `Inf` and `-Inf` - Positive and Negative Infinity**
+
+-   **Description:** Represents **positive infinity (`Inf`)** and **negative infinity (`-Inf`)**.
+-   **Use case:** Used when a number exceeds the largest representable finite number in R or when division by zero occurs.
+
+. . .
+
+**Example:**
+
+```{r}
+x <- 1 / 0  # Inf
+
+is.na(x)
+is.nan(x)
+is.infinite(x)
+is.null(x)
+```
+
+##  {.smaller}
+
+**4. `NULL` - Null Object**
+
+-   **Description:** Represents an **empty** or **non-existent value**.
+-   **Use case:** Used to represent the absence of any value or object. It's different from `NA` because it means the absence of a value entirely, rather than missing data.
+
+. . .
+
+**Example:**
+
+```{r}
+x <- NULL
+
+is.na(x)
+is.nan(x)
+is.infinite(x)
+is.null(x)
+```
+
+##  {.smaller}
+
+**5. `TRUE` and `FALSE` - Logical Boolean Values**
+
+-   **Description:** Represents logical **TRUE** and **FALSE** values.
+-   **Use case:** Used in logical conditions and comparisons.
+
+. . .
+
+**Example:**
+
+```{r}
+x <- TRUE
+y <- FALSE
+x & y
+```
+
+##  {.smaller}
+
+**6. `Inf` vs `-Inf`**
+
+-   **`Inf`** is used to represent positive infinity (like `1 / 0`), and **`-Inf`** represents negative infinity (like `-1 / 0`).
+
+. . .
+
+**Example:**
+
+```{r}
+x <- 1 / 0  # Inf
+
+is.na(x)
+is.nan(x)
+is.infinite(x)
+is.null(x)
+```
+
+##  {.smaller}
+
+**Summary Table**
+
+| Value   | Description                         | Use Case Example         |
+|---------|-------------------------------------|--------------------------|
+| `NA`    | Missing or undefined data           | `x <- NA`                |
+| `NaN`   | Not a number (e.g., 0/0)            | `y <- 0 / 0`             |
+| `Inf`   | Positive infinity                   | `positive_inf <- 1 / 0`  |
+| `-Inf`  | Negative infinity                   | `negative_inf <- -1 / 0` |
+| `NULL`  | Represents an empty object or value | `z <- NULL`              |
+| `TRUE`  | Logical TRUE                        | `x <- TRUE`              |
+| `FALSE` | Logical FALSE                       | `y <- FALSE`             |
+
+## Operators {.smaller}
+
+R has several types of operators for performing calculations and data manipulations:
+
+**1. Arithmetic Operators** (Perform mathematical operations)
+
+| Operator    | Description         | Example (`x <- 10`, `y <- 3`) | Result |
+|-------------|---------------------|-------------------------------|--------|
+| `+`         | Addition            | `x + y`                       | `13`   |
+| `-`         | Subtraction         | `x - y`                       | `7`    |
+| `*`         | Multiplication      | `x * y`                       | `30`   |
+| `/`         | Division            | `x / y`                       | `3.33` |
+| `^` or `**` | Exponentiation      | `x ^ y` or `x ** y`           | `1000` |
+| `%%`        | Modulus (remainder) | `x %% y`                      | `1`    |
+| `%/%`       | Integer Division    | `x %/% y`                     | `3`    |
+
+##  {.smaller}
+
+**2. Relational (Comparison) Operators** (Compare values, return `TRUE` or `FALSE`)
+
+| Operator | Description              | Example (`x <- 10, y <- 3`) | Result  |
+|----------|--------------------------|-----------------------------|---------|
+| `==`     | Equal to                 | `x == y`                    | `FALSE` |
+| `!=`     | Not equal to             | `x != y`                    | `TRUE`  |
+| `>`      | Greater than             | `x > y`                     | `TRUE`  |
+| `<`      | Less than                | `x < y`                     | `FALSE` |
+| `>=`     | Greater than or equal to | `x >= y`                    | `TRUE`  |
+| `<=`     | Less than or equal to    | `x <= y`                    | `FALSE` |
+
+##  {.smaller}
+
+**3. Logical Operators** (Used for Boolean logic)
+
+| Operator | Description              | Example (`x <- TRUE, y <- FALSE`) | Result  |
+|--------------|----------------|-----------------------------|--------------|
+| `&`      | AND (element-wise)       | `x & y`                           | `FALSE` |
+| `&&`     | AND (first element only) | `x && y`                          | `FALSE` |
+| `|`      | OR (element-wise)        | `x | y`                           | `TRUE`  |
+| `||`     | OR (first element only)  | `x || y`                          | `TRUE`  |
+| `!`      | NOT                      | `!x`                              | `FALSE` |
+
+##  {.smaller}
+
+**4. Assignment Operators** (Used to assign values)
+
+| Operator | Description              | Example    |
+|----------|--------------------------|------------|
+| `<-`     | Left assignment          | `x <- 10`  |
+| `->`     | Right assignment         | `10 -> x`  |
+| `<<-`    | Global assignment        | `x <<- 20` |
+| `=`      | Assignment (less common) | `x = 5`    |
+
+##  {.smaller}
+
+**5. Special Operators** (Used for specific operations)
+
+| Operator | Description                    | Example                         |
+|----------------|----------------------------------------|----------------|
+| `%in%`   | Checks if value is in a vector | `3 %in% c(1, 2, 3, 4)` → `TRUE` |
+| `%*%`    | Matrix multiplication          | `A %*% B`                       |
+| `%/%`    | Integer division               | `10 %/% 3` $\rightarrow$ `3`    |
+| `%%`     | Modulos division (remainder)   | `10 %% 3` $\rightarrow$ `1`     |
+
+## Functions
+
+-   self-contained block of code performing a specific task
+-   help organise the code
+-   make it reusable
+-   improve readability
+
+. . .
+
+```{r}
+## computing the average value without using functions
+
+x <- rnorm(10, mean = 3)
+
+(x[1] + x[2] + x[3] + x[4] + x[5] + x[6] + x[7] + x[8] + x[9] + x[10]) / 10
+```
+
+. . .
+
+```{r}
+## computing the average value using functions
+
+mean(x)
+```
+
+##  {.smaller}
+
+**1. Mathematical Functions**
+
+| Function           | Description                  | Example             | Output  |
+|--------------------|------------------------------|---------------------|---------|
+| `abs(x)`           | Absolute value               | `abs(-5)`           | `5`     |
+| `sqrt(x)`          | Square root                  | `sqrt(16)`          | `4`     |
+| `log(x, base)`     | Logarithm (default base `e`) | `log(8, 2)`         | `3`     |
+| `exp(x)`           | Exponential (`e^x`)          | `exp(2)`            | `7.389` |
+| `round(x, digits)` | Rounds a number              | `round(3.14159, 2)` | `3.14`  |
+| `ceiling(x)`       | Rounds up                    | `ceiling(3.4)`      | `4`     |
+| `floor(x)`         | Rounds down                  | `floor(3.9)`        | `3`     |
+| `trunc(x)`         | Truncates decimals           | `trunc(3.9)`        | `3`     |
+| `factorial(x)`     | Factorial                    | `factorial(5)`      | `120`   |
+
+##  {.smaller}
+
+**2. Statistical Functions**
+
+| Function         | Description         | Example                       | Output |
+|------------------|---------------------|-------------------------------|--------|
+| `mean(x)`        | Arithmetic mean     | `mean(c(1,2,3,4))`            | `2.5`  |
+| `median(x)`      | Median              | `median(c(1,2,3,4,5))`        | `3`    |
+| `sd(x)`          | Standard deviation  | `sd(c(1,2,3,4,5))`            | `1.58` |
+| `var(x)`         | Variance            | `var(c(1,2,3,4,5))`           | `2.5`  |
+| `sum(x)`         | Sum of elements     | `sum(c(1,2,3))`               | `6`    |
+| `prod(x)`        | Product of elements | `prod(c(1,2,3,4))`            | `24`   |
+| `range(x)`       | Min and max values  | `range(c(2,4,6,8))`           | `2 8`  |
+| `quantile(x, p)` | Percentiles         | `quantile(c(1,2,3,4,5), 0.5)` | `3`    |
+
+##  {.smaller}
+
+**3. Logical and Comparison Functions**
+
+| Function   | Description                      | Example                       | Output             |
+|------------------|---------------------|-----------------|-----------------|
+| `all(x)`   | Checks if all values are `TRUE`  | `all(c(TRUE, TRUE))`          | `TRUE`             |
+| `any(x)`   | Checks if any value is `TRUE`    | `any(c(FALSE, TRUE))`         | `TRUE`             |
+| `is.na(x)` | Checks for `NA` values           | `is.na(c(1, NA, 3))`          | `FALSE TRUE FALSE` |
+| `which(x)` | Returns indices of `TRUE` values | `which(c(FALSE, TRUE, TRUE))` | `2 3`              |
+
+##  {.smaller}
+
+**4. Character/String Functions**
+
+| Function                 | Description          | Example                            | Output          |
+|------------------|---------------------|-----------------|-----------------|
+| `nchar(x)`               | Number of characters | `nchar("hello")`                   | `5`             |
+| `toupper(x)`             | Convert to uppercase | `toupper("hello")`                 | `"HELLO"`       |
+| `tolower(x)`             | Convert to lowercase | `tolower("HELLO")`                 | `"hello"`       |
+| `substr(x, start, stop)` | Extract substring    | `substr("Hello", 2, 4)`            | `"ell"`         |
+| `paste(x, y, sep)`       | Concatenate strings  | `paste("Hello", "World", sep=" ")` | `"Hello World"` |
+
+##  {.smaller}
+
+**5. Data Manipulation Functions**
+
+| Function    | Description        | Example                   | Output         |
+|------------------|---------------------|-----------------|-----------------|
+| `length(x)` | Number of elements | `length(c(1,2,3))`        | `3`            |
+| `sort(x)`   | Sort elements      | `sort(c(3,1,2))`          | `1 2 3`        |
+| `rev(x)`    | Reverse elements   | `rev(c(1,2,3))`           | `3 2 1`        |
+| `unique(x)` | Remove duplicates  | `unique(c(1,2,2,3))`      | `1 2 3`        |
+| `table(x)`  | Frequency count    | `table(c("a", "b", "a"))` | `"a" 2, "b" 1` |
+
+##  {.smaller}
+
+**6. Control and Utility Functions**
+
+| Function                     | Description         | Example                      | Output        |
+|------------------|---------------------|-----------------|-----------------|
+| `seq(from, to, by)`          | Generate a sequence | `seq(1, 10, 2)`              | `1 3 5 7 9`   |
+| `rep(x, times)`              | Repeat values       | `rep(1:3, 2)`                | `1 2 3 1 2 3` |
+| `sample(x, size)`            | Random sample       | `sample(1:10, 5)`            | Varies        |
+| `ifelse(condition, yes, no)` | Conditional         | `ifelse(3 > 2, "Yes", "No")` | `"Yes"`       |
+
+##  {.smaller}
+
+**7. `tidyverse` Data Manipulation Functions (`dplyr`)**
+
+| Function                                           | Description                     | Example                                    |
+|-----------------------|----------------------------|---------------------|
+| `filter(.data, condition)`                         | Subset rows based on conditions | `filter(df, age > 30)`                     |
+| `select(.data, columns)`                           | Choose specific columns         | `select(df, name, age)`                    |
+| `mutate(.data, new_col = expression)`              | Create or modify columns        | `mutate(df, age_10 = age + 10)`            |
+| `arrange(.data, column)`                           | Sort rows by column             | `arrange(df, desc(salary))`                |
+| `group_by(.data, column)`                          | Group data by a column          | `group_by(df, department)`                 |
+| `summarize(.data, new_col = summary_func(column))` | Compute summary statistics      | `summarize(df, avg_salary = mean(salary))` |
+| `rename(.data, new_name = old_name)`               | Rename columns                  | `rename(df, emp_name = name)`              |
+| `distinct(.data, column)`                          | Remove duplicate rows           | `distinct(df, city)`                       |
+| `count(.data, column)`                             | Count occurrences               | `count(df, gender)`                        |
+
+##  {.smaller}
+
+**8. other important functions:**
+
+| Function        | Description                                     | Example Usage                        |
+|----------------|-------------------------|--------------------------------|
+| `ls()`          | List objects in the current environment         | `ls()`                               |
+| `setwd()`       | Set the working directory                       | `setwd("C:/path/to/directory")`      |
+| `getwd()`       | Get the current working directory               | `getwd()`                            |
+| `save()`        | Save objects to a file                          | `save(x, file = "x_data.RData")`     |
+| `save.image()`  | Save all objects in the environment to a file   | `save.image("my_workspace.RData")`   |
+| `help()`        | Get help on a function or topic                 | `help(ls)`                           |
+| `history()`     | View the command history of the current session | `history()`                          |
+| `savehistory()` | Save the command history to a file              | `savehistory("my_history.Rhistory")` |
+| `loadhistory()` | Load command history from a file                | `loadhistory("my_history.Rhistory")` |
+
+## Practice!
+
+1.  Open the file "02-functions.R" and follow the given steps.
+2.  Once completed, upload your exercise to the Moodle course page.
+3.  We will hold a session to review and correct the exercise together.
+
+# R Libraries
+
+## What are Libraries in R?
+
+-   **Libraries** (also called **packages**) in R are collections of pre-written functions, data sets, and documentation.
+-   They extend R's functionality and provide tools for various tasks like data analysis, visualization, statistics, and machine learning.
+-   You can install and load libraries to access these tools.
+
+## Why Use Libraries? {.smaller}
+
+-   **Efficiency**: Libraries save you time by providing pre-built functions.
+-   **Specialization**: Libraries are tailored to specific tasks (e.g., `ggplot2` or `lattice` for visualization, `dplyr` or `reshape2` for data manipulation).
+-   **Community Contributions (bright side)**: Thousands of libraries are available, often developed by the R community.
+-   **Community Contributions (dark side)**: No professional software development. Many libraries can be discontinued.
+
+## Installing Libraries
+
+To use a library, it needs to be installed first.
+
+### Syntax:
+
+``` r
+install.packages("library_name")
+```
+
+### Example:
+
+``` r
+install.packages("ggplot2")
+```
+
+## Loading Libraries
+
+Once installed, you need to load a library to access its functions.
+
+### Syntax:
+
+``` r
+library(library_name)
+```
+
+### Example:
+
+``` r
+library(ggplot2)
+```
+
+## Checking Installed Libraries
+
+You can check which libraries are installed using the `installed.packages()` function.
+
+### Example:
+
+``` r
+installed.packages()
+```
+
+## Commonly Used Libraries in R {.smaller}
+
+-   `ggplot2`
+    -   **Purpose**: Data visualization
+    -   **Example**: Create sophisticated plots and charts.
+-   `afex`
+    -   **Purpose**: Analysis of Factorial Experiments.
+    -   **Example**: Convenience functions for analyzing factorial experiments using ANOVA or mixed models.
+-   `tidyr` and `reshape2`
+    -   **Purpose**: Reshaping data
+    -   **Example**: Pivot data between wide and long formats.
+-   `shiny`
+    -   **Purpose**: Build interactive web applications
+    -   **Example**: Develop dashboards and interactive plots.
+
+## Updating Libraries
+
+Libraries can be updated to the latest version using the `install.packages()` function.
+
+### Syntax:
+
+``` r
+install.packages("library_name", repos = "https://cloud.r-project.org/")
+```
+
+### Example:
+
+``` r
+install.packages("ggplot2", repos = "https://cloud.r-project.org/")
+```
+
+## Unloading Libraries
+
+To unload a library during your R session, use the `detach()` function.
+
+### Syntax:
+
+``` r
+detach("package:library_name", unload = TRUE)
+```
+
+### Example:
+
+``` r
+detach("package:ggplot2", unload = TRUE)
+```
+
+# Writing R scripts
+
+## How to load a dataset
+
+```{r, echo = FALSE}
+my_dat <- sleepstudy
+my_dat$Group <- as.factor( rep(c("A", "B"), each = 90) )
+write.csv(my_dat, "data/data_sleepstudy.csv")
+openxlsx::write.xlsx(my_dat, "data/data_sleepstudy.xlsx",
+                     colNames = TRUE)
+```
+
+::: panel-tabset
+## CSV format
+
+```{r}
+DATA <- read.csv(file = "data/data_sleepstudy.csv")
+# DATA <- read.csv2(file = "data/data_sleepstudy.csv")
+```
+
+## XLSX format
+
+```{r}
+library(readxl)
+
+DATA <- read_xlsx(path = "data/data_sleepstudy.xlsx", sheet = "Sheet 1")
+```
+
+## Other formats
+
+```{r}
+lsf.str("package:foreign", pattern = "read")
+```
+:::
+
+## How to explore a dataset
+
+**Base R:**
+
+```{r}
+# Check the structure of the dataset
+str(DATA)
+
+# View the first few rows
+head(DATA)
+
+# Check for missing values and quantiles
+summary(DATA)
+
+quantile(DATA$Reaction)
+quantile(DATA$Days)
+```
+
+. . .
+
+**`tidyverse`:**
+
+```{r}
+glimpse(DATA)
+
+skimr::skim(DATA)
+
+DATA %>%
+  summarise(across(everything(), ~ sum(is.na(.)), .names = "missing_{.col}")) 
+
+DATA %>%
+  summarise(across(where(is.numeric),
+                   list(
+                     mean = mean, 
+                     sd = sd, 
+                     min = min, 
+                     max = max),
+                   na.rm = TRUE)
+            )
+```
+
+## How to clean a dataset
+
+**Base R:**
+
+``` r
+# Handling missing values
+clean_DATA <- na.omit(DATA)  # Removes rows with NA values
+# or, you could impute missing values
+DATA$column_name <- ifelse(is.na(DATA$column_name), 
+     mean(DATA$column_name, na.rm = TRUE), data$column_name)
+
+# Filter data based on certain conditions
+flt_DATA <- DATA[DATA$column_name > value,]
+```
+
+. . .
+
+**`tidyverse`:**
+
+``` r
+# Handling missing values
+clean_DATA <- DATA %>% drop_na()  # Removes rows with NA values
+# or, you could impute missing values
+DATA <- DATA %>%
+  mutate(column_name = replace_na(column_name, mean(column_name, na.rm = TRUE)))
+
+# Filter data based on certain conditions
+filtered_data <- data %>% filter(column_name > value)
+```
+
+## Practice!
+
+1.  Open the file "03-datasets.R" and follow the given steps.
+2.  Once completed, upload your exercise to the Moodle course page.
+3.  We will hold a session to review and correct the exercise together.
+
+## Exploratory Data Analysis
+
+**Base R:**
+
+```{r}
+## observing the distributions of the data
+plot( density( DATA$Reaction) )
+hist( DATA$Reaction )
+
+quantile( DATA$Reaction )
+quantile( DATA$Reaction[DATA$Group == "A"] )
+quantile( DATA$Reaction[DATA$Group == "B"] )
+
+moments::skewness( DATA$Reaction )
+# check the formula
+# Generally 3 means the kurtosis is OK
+#           in other cases 0 is OK (i.e. in library e1071)
+moments::kurtosis( DATA$Reaction )
+
+## testing the normality of the distribution
+qqnorm( DATA$Reaction )
+qqline( DATA$Reaction )
+
+shapiro.test( DATA$Reaction )
+```
+
+. . .
+
+**`tidyverse`:**
+
+```{r}
+## observing the distributions of the data
+ggplot(DATA, aes(x = Reaction)) +
+  geom_density(fill = "blue", alpha = 0.4) +
+  theme_minimal()
+
+ggplot(DATA, aes(x = Reaction)) +
+  geom_histogram(aes(y = ..density..), bins = 30, 
+                 fill = "skyblue", color = "black", alpha = 0.6) +
+  geom_density(color = "red", size = 1) +
+  theme_minimal()
+
+DATA %>% 
+ reframe(enframe(quantile(Reaction), "quantile", "Reaction"))
+
+DATA %>% 
+ group_by(Group) %>%  
+ reframe(enframe(quantile(Reaction), "quantile", "Reaction"))
+
+DATA %>%
+  reframe(
+    skewness = moments::skewness(Reaction, na.rm = TRUE),
+    kurtosis = moments::kurtosis(Reaction, na.rm = TRUE)
+  )
+
+## testing the normality of the distribution
+ggplot(DATA, aes(sample = Reaction)) +
+  stat_qq() +
+  stat_qq_line() +
+  theme_minimal()
+```
+
+## Checking for outliers
+
+An outlier is a data point that is significantly different from the rest of the data.
+
+It lies far outside the expected range, either much higher or lower than most other values.
+
+Outliers can result from errors, variability, or rare events and may affect analysis results.
+
+**Base R:**
+
+```{r}
+## create criterion
+mean_sd <- c(
+  mean( DATA$Reaction ) - 2.5 * sd( DATA$Reaction ),
+  mean( DATA$Reaction ) + 2.5 * sd( DATA$Reaction )
+)
+perc <- quantile( DATA$Reaction, probs = c(0.001, 0.991) )
+
+## find the rows of the database that appear to be outliers
+out1 <- which(
+    DATA$Reaction > mean_sd[2] | DATA$Reaction < mean_sd[1]
+)
+out1
+
+out2 <- which(
+    DATA$Reaction > perc[2] | DATA$Reaction < perc[1]
+)
+out2
+
+## remove the outliers from the dataset
+DATA1 <- droplevels( DATA[-out1,] )
+DATA2 <- droplevels( DATA[-out2,] )
+
+nrow(DATA)
+nrow(DATA1)
+nrow(DATA2)
+
+```
+
+. . .
+
+**`tidyverse`:**
+
+```{r}
+# Define outlier criteria
+DATA <- DATA %>%
+  mutate(
+    mean_sd_lower = mean(Reaction) - 2.5 * sd(Reaction),
+    mean_sd_upper = mean(Reaction) + 2.5 * sd(Reaction),
+    perc_lower = quantile(Reaction, probs = 0.001),
+    perc_upper = quantile(Reaction, probs = 0.991)
+  )
+
+# Remove outliers based on mean ± 2.5 SD
+DATA1 <- DATA %>%
+  filter(Reaction >= mean_sd_lower & Reaction <= mean_sd_upper) %>%
+  droplevels()
+
+# Remove outliers based on quantile thresholds (0.1% and 99.1%)
+DATA2 <- DATA %>%
+  filter(Reaction >= perc_lower & Reaction <= perc_upper) %>%
+  droplevels()
+
+# Display number of rows
+nrow(DATA)
+nrow(DATA1)
+nrow(DATA2)
+```
+
+```{r, echo = FALSE}
+DATA <- droplevels( DATA[,1:4] )
+```
+
+## Statistical Analysis
+
+```{r}
+# Correlation matrix
+cor(DATA[,c("Reaction", "Days")])
+
+# Correlation test
+cor.test(DATA$Reaction, DATA$Days)
+
+# Linear regression
+model <- lm(Reaction ~ Days * Group, data = DATA)
+
+summary(model)
+anova(model)
+
+# T-test (for comparing means)
+t.test(DATA$Reaction[DATA$Group == "A"], DATA$Reaction[DATA$Group == "B"])
+t.test(Reaction ~ Group, data = DATA)
+
+# Wilcoxon test (non-parametric data)
+wilcox.test(DATA$Reaction[DATA$Group == "A"], DATA$Reaction[DATA$Group == "B"])
+wilcox.test(Reaction ~ Group, data = DATA)
+```
+
+## Data Visualization
+
+**Base R:**
+
+```{r}
+# Plot a Boxplot
+boxplot(Reaction ~ Group, data = DATA)
+
+# Plot a barplot
+graph <- aggregate(Reaction ~ Group, data = DATA,
+                   FUN = function(x){cbind(mean(x), sd(x))})
+
+bar_positions <- barplot(Reaction[,1] ~ Group,
+  data = graph,
+                         ylim = c(0, max(graph$Reaction[,1] + graph$Reaction[,2]) + 1),
+                         col = "lightblue", 
+                         main = "Barplot with Error Bars", 
+                         ylab = "Reaction")
+# Add error bars
+arrows(bar_positions, graph$Reaction[,1] - graph$Reaction[,2],
+       bar_positions, graph$Reaction[,1] + graph$Reaction[,2], 
+       angle = 90, code = 3, length = 0.1, col = "grey", lwd = 2)
+
+# Plot a Linear regression
+model <- lm(Reaction ~ Days, data = DATA)
+
+plot( y = DATA$Reaction, x = DATA$Days ,
+      xlab = "Days", ylab = "Reaction Time")
+abline( model )
+```
+
+. . .
+
+**`ggplot2`:**
+
+```{r}
+# Plot a boxplot
+ggplot(DATA, aes(y = Reaction, x = Group)) +
+  geom_boxplot()+
+  theme_classic()
+
+# Plot a barplot
+ggplot(DATA, aes(y = Reaction, x = Group)) +
+  stat_summary(geom = "bar", fun = mean, fill = "lightblue")+
+  stat_summary(geom = "pointrange", fun.data = mean_sdl, colour = "grey")+
+  theme_classic()
+
+# Plot a Linear regression
+ggplot(DATA, aes(y = Reaction, x = Days)) +
+  geom_smooth(method = "lm")+
+  geom_point()
+```
+
+## Combine all elements into a unique script - Base R
+
+```{r}
+# This study examines the average reaction time per day (in milliseconds)
+# for subjects in a sleep deprivation experiment.
+# Participants were divided into two groups and asked to perform
+# a speeded response task over multiple days in a longitudinal study.
+# During the experiment, some participants were deprived of sleep for a
+# certain number of days, allowing researchers to analyze the
+# effects of sleep deprivation on reaction times.
+##
+## In the dataset the dependent variable is: Reaction,
+##    that is the raction time in milliseconds
+## In the dataset the independet variables are:
+## a. Days (the number of days without sleeping)
+## b. Group (A or B)
+
+# rm(list = ls())
+# graphics.off()
+
+# setwd("path")
+
+DATA <- read.csv(file = "data/data_sleepstudy.csv")
+
+# Check the structure of the dataset
+str(DATA)
+
+# View the first few rows
+head(DATA)
+
+# Check for missing values and quantiles
+summary(DATA)
+
+quantile(DATA$Reaction)
+quantile(DATA$Days)
+
+# Handling missing values
+DATA <- na.omit(DATA)  # Removes rows with NA values
+
+## observing the distributions of the data
+plot( density( DATA$Reaction) )
+hist( DATA$Reaction )
+
+quantile( DATA$Reaction )
+quantile( DATA$Reaction[DATA$Group == "A"] )
+quantile( DATA$Reaction[DATA$Group == "B"] )
+
+moments::skewness( DATA$Reaction )
+# check the formula
+# Generally 3 means the kurtosis is OK
+#           in other cases 0 is OK (i.e. in library e1071)
+moments::kurtosis( DATA$Reaction )
+
+## testing the normality of the distribution
+qqnorm( DATA$Reaction )
+qqline( DATA$Reaction )
+
+shapiro.test( DATA$Reaction )
+
+## Checking for outliers
+
+## create criterion
+mean_sd <- c(
+  mean( DATA$Reaction ) - 2.5 * sd( DATA$Reaction ),
+  mean( DATA$Reaction ) + 2.5 * sd( DATA$Reaction )
+)
+
+## find the rows of the database that appear to be outliers
+out1 <- which(
+    DATA$Reaction > mean_sd[2] | DATA$Reaction < mean_sd[1]
+)
+out1
+
+## % of outliers
+length(out1)/nrow(DATA) * 100
+
+## Statistical Analysis
+
+# Correlation test
+cor.test(DATA$Reaction, DATA$Days)
+cor.test(DATA$Reaction[DATA$Group == "A"], DATA$Days[DATA$Group == "A"])
+cor.test(DATA$Reaction[DATA$Group == "B"], DATA$Days[DATA$Group == "B"])
+
+# Linear regression
+model <- lm(Reaction ~ Days * Group, data = DATA)
+
+summary(model)
+anova(model)
+
+# T-test (for comparing means)
+t.test(DATA$Reaction[DATA$Group == "A"], DATA$Reaction[DATA$Group == "B"])
+t.test(Reaction ~ Group, data = DATA)
+
+# Wilcoxon test (non-parametric data)
+wilcox.test(DATA$Reaction[DATA$Group == "A"], DATA$Reaction[DATA$Group == "B"])
+wilcox.test(Reaction ~ Group, data = DATA)
+
+## Data Visualization
+
+# Plot a Boxplot
+boxplot(Reaction ~ Group, data = DATA)
+
+# Plot a barplot
+graph <- aggregate(Reaction ~ Group, data = DATA,
+                   FUN = function(x){cbind(mean(x), sd(x))})
+
+bar_positions <- barplot(Reaction[,1] ~ Group,
+  data = graph,
+                         ylim = c(0, max(graph$Reaction[,1] + graph$Reaction[,2]) + 1),
+                         col = "lightblue", 
+                         main = "Barplot with Error Bars", 
+                         ylab = "Reaction")
+# Add error bars
+arrows(bar_positions, graph$Reaction[,1] - graph$Reaction[,2],
+       bar_positions, graph$Reaction[,1] + graph$Reaction[,2], 
+       angle = 90, code = 3, length = 0.1, col = "grey", lwd = 2)
+
+# Plot a Linear regression
+modelA <- lm(Reaction ~ Days, data = DATA[DATA$Group == "A",])
+modelB <- lm(Reaction ~ Days, data = DATA[DATA$Group == "B",])
+
+plot( y = DATA$Reaction, x = DATA$Days ,
+      col = as.factor(DATA$Group),
+      xlab = "Days", ylab = "Reaction Time")
+abline( modelA )
+abline( modelB, col = "red" )
+```
+
+## Combine all elements into a unique script - `tidyverse`
+
+```{r}
+# This study examines the average reaction time per day (in milliseconds)
+# for subjects in a sleep deprivation experiment.
+# Participants were divided into two groups and asked to perform
+# a speeded response task over multiple days in a longitudinal study.
+# During the experiment, some participants were deprived of sleep for a
+# certain number of days, allowing researchers to analyze the
+# effects of sleep deprivation on reaction times.
+##
+## In the dataset the dependent variable is: Reaction,
+##    that is the raction time in milliseconds
+## In the dataset the independet variables are:
+## a. Days (the number of days without sleeping)
+## b. Group (A or B)
+
+# rm(list = ls())
+# graphics.off()
+
+library(tidyverse)
+library(ggplot2)
+library(dplyr)
+
+# setwd("path")
+
+DATA <- read.csv(file = "data/data_sleepstudy.csv")
+
+# Check the structure of the dataset
+str(DATA)
+
+# View the first few rows
+glimpse(DATA)
+
+skimr::skim(DATA)
+
+DATA %>%
+  summarise(across(everything(), ~ sum(is.na(.)), .names = "missing_{.col}")) 
+
+DATA %>%
+  summarise(across(where(is.numeric),
+                   list(
+                     mean = mean, 
+                     sd = sd, 
+                     min = min, 
+                     max = max),
+                   na.rm = TRUE)
+            )
+
+# Handling missing values
+DATA <- DATA %>% drop_na()  # Removes rows with NA values
+
+## observing the distributions of the data
+ggplot(DATA, aes(x = Reaction)) +
+  geom_density(fill = "blue", alpha = 0.4) +
+  theme_minimal()
+
+ggplot(DATA, aes(x = Reaction)) +
+  geom_histogram(aes(y = ..density..), bins = 30, 
+                 fill = "skyblue", color = "black", alpha = 0.6) +
+  geom_density(color = "red", size = 1) +
+  theme_minimal()
+
+DATA %>% 
+ reframe(enframe(quantile(Reaction), "quantile", "Reaction"))
+
+DATA %>% 
+ group_by(Group) %>%  
+ reframe(enframe(quantile(Reaction), "quantile", "Reaction"))
+
+DATA %>%
+  reframe(
+    skewness = moments::skewness(Reaction, na.rm = TRUE),
+    kurtosis = moments::kurtosis(Reaction, na.rm = TRUE)
+  )
+
+## testing the normality of the distribution
+ggplot(DATA, aes(sample = Reaction)) +
+  stat_qq() +
+  stat_qq_line() +
+  theme_minimal()
+
+shapiro.test( DATA$Reaction )
+
+## Checking for outliers
+
+# Define outlier criteria
+DATA <- DATA %>%
+  mutate(
+    mean_sd_lower = mean(Reaction) - 2.5 * sd(Reaction),
+    mean_sd_upper = mean(Reaction) + 2.5 * sd(Reaction),
+    perc_lower = quantile(Reaction, probs = 0.001),
+    perc_upper = quantile(Reaction, probs = 0.991)
+  )
+
+# Remove outliers based on mean ± 2.5 SD
+DATA1 <- DATA %>%
+  filter(Reaction >= mean_sd_lower & Reaction <= mean_sd_upper) %>%
+  droplevels()
+
+## % of outliers
+(1-length(DATA1)/nrow(DATA)) * 100
+
+DATA <- DATA1
+rm(DATA1)
+
+## Statistical Analysis
+
+# Correlation test
+cor.test(DATA$Reaction, DATA$Days)
+cor.test(DATA$Reaction[DATA$Group == "A"], DATA$Days[DATA$Group == "A"])
+cor.test(DATA$Reaction[DATA$Group == "B"], DATA$Days[DATA$Group == "B"])
+
+# Linear regression
+model <- lm(Reaction ~ Days * Group, data = DATA)
+
+summary(model)
+anova(model)
+
+# T-test (for comparing means)
+t.test(DATA$Reaction[DATA$Group == "A"], DATA$Reaction[DATA$Group == "B"])
+t.test(Reaction ~ Group, data = DATA)
+
+# Wilcoxon test (non-parametric data)
+wilcox.test(DATA$Reaction[DATA$Group == "A"], DATA$Reaction[DATA$Group == "B"])
+wilcox.test(Reaction ~ Group, data = DATA)
+
+## Data Visualization
+
+# Plot a boxplot
+ggplot(DATA, aes(y = Reaction, x = Group)) +
+  geom_boxplot()+
+  theme_classic()
+
+# Plot a barplot
+ggplot(DATA, aes(y = Reaction, x = Group)) +
+  stat_summary(geom = "bar", fun = mean, fill = "lightblue")+
+  stat_summary(geom = "pointrange", fun.data = mean_sdl, colour = "grey")+
+  theme_classic()
+
+# Plot a Linear regression
+ggplot(DATA, aes(y = Reaction, x = Days)) +
+  geom_smooth(method = "lm")+
+  geom_point()
+```
+
+# Focus on statistical tests
+
+## Correlation
+
+### What It Measures
+
+- **Strength and direction** of a linear relationship between two continuous variables.
+- Common metrics:
+  - `pearson`: parametric
+  - `spearman` or `kendall`: non-parametric
+
+### Real Dataset Example: `mtcars`
+
+```{r}
+cor.test(mtcars$wt, mtcars$mpg, method = "pearson")
+
+correlation::correlation(data = mtcars, select = c("wt", "mpg"))
+```
+
+### Assumptions
+
+- Linearity
+- Normal distribution of both variables (for Pearson)
+- No extreme outliers
+
+### Visualization
+
+```{r}
+plot(mtcars$wt, mtcars$mpg)
+abline(lm(mpg ~ wt, data = mtcars), col = "red")
+
+GGally::ggpairs( mtcars, columns = c(1, 6))
+```
+
+---
+
+## T-Tests
+
+### Types of T-Tests
+
+- One-sample
+- Two-sample (independent)
+- Paired
+
+### Real Dataset Example: `ToothGrowth`
+
+```{r}
+library(datasets)
+data(ToothGrowth)
+head(ToothGrowth)
+t.test(len ~ supp, data = ToothGrowth, var.equal = TRUE)
+```
+
+### Assumptions
+
+- Independent samples
+- Normally distributed data
+- Equal variances (for `var.equal = TRUE`)
+
+### Check Assumptions
+
+```{r}
+shapiro.test(ToothGrowth$len[ToothGrowth$supp == "OJ"])
+shapiro.test(ToothGrowth$len[ToothGrowth$supp == "VC"])
+
+var.test(len ~ supp, data = ToothGrowth)
+```
+
+### Visualization
+
+```{r}
+boxplot(len ~ supp, data = ToothGrowth)
+
+ggplot(ToothGrowth, aes(y = len, x = supp))+
+  geom_boxplot()
+
+ggplot(ToothGrowth, aes(y = len, x = supp))+
+  geom_boxplot(aes(fill = supp))
+
+ggplot(ToothGrowth, aes(y = len, x = supp))+
+  geom_boxplot(width=.2, aes(fill = supp))+
+  geom_violin(alpha = 0.5)
+
+ggplot(ToothGrowth, aes(y = len, x = supp))+
+  geom_boxplot(width=.2, aes(fill = supp))+
+  geom_violin(alpha = 0.5)+
+  stat_summary()
+
+ggplot(ToothGrowth, aes(y = len, x = supp))+
+  geom_boxplot(width=.2, aes(fill = supp))+
+  geom_violin(alpha = 0.5)+
+  stat_summary() +
+  theme_minimal()
+```
+
+---
+
+## Wilcoxon Test
+
+### When to Use
+
+- Non-parametric alternative to the t-test
+- When assumptions of t-test are violated (e.g., non-normal data)
+
+### Real Dataset Example: `ToothGrowth`
+
+```{r}
+wilcox.test(len ~ supp, data = ToothGrowth)
+```
+
+### Assumptions
+
+- Continuous or ordinal data
+- Independent or paired depending on test
+- Similar shape of distributions
+
+
+---
+
+## Linear Models (LM)
+
+### What They Do
+
+- Fit linear relationship between predictors and outcome
+- `lm()` function in R
+
+### Real Dataset Example: `mtcars`
+
+```{r}
+model <- lm(mpg ~ wt + hp, data = mtcars)
+summary(model)
+```
+
+### Assumptions
+
+- Linearity
+- Homoscedasticity
+- Normality of residuals
+- Independence of errors
+
+### Diagnostic Plots
+
+```{r}
+par(mfrow = c(2, 2))
+plot(model)
+```
+
+---
+
+## Model Inference
+
+### Coefficients Interpretation
+
+```{r}
+summary(model)
+```
+
+- p-values for hypothesis tests on coefficients
+- R-squared for model fit
+
+### Confidence Intervals
+
+```{r}
+confint(model)
+```
+
+---
+
+## Visualization: Linear Model
+
+```{r}
+library(ggplot2)
+
+ggplot(mtcars, aes(x = wt, y = mpg)) +
+  geom_point()
+
+ggplot(mtcars, aes(x = wt, y = mpg)) +
+  geom_point() +
+  geom_smooth()
+
+ggplot(mtcars, aes(x = wt, y = mpg)) +
+  geom_point() +
+  geom_smooth(method = "lm")
+
+ggplot(mtcars, aes(x = wt, y = mpg)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = TRUE) +
+  theme_minimal()
+```
+
+---
+
+## Summary Table
+
+| Method         | Assumptions                                  | Inference Tools         |
+|----------------|----------------------------------------------|--------------------------|
+| Correlation    | Linearity, normality (Pearson)               | `cor.test()`             |
+| T-Test         | Normality, equal variance                    | `t.test()`, `var.test()` |
+| Wilcoxon       | None strict (non-parametric)                 | `wilcox.test()`          |
+| Linear Model   | Linearity, normality, homoscedasticity       | `lm()`, `summary()`      |
+
+---
+
+# RStudio Projects and the R Workspace
+
+## What is an RStudio Project?
+
+- A **self-contained working directory** managed by RStudio
+- Contains:
+  - `.Rproj` file
+  - Script files, data, outputs
+- Promotes **reproducibility** and **organization**
+
+---
+
+## Creating an RStudio Project
+
+1. File > New Project
+2. Choose:
+   - New Directory
+   - Existing Directory
+   - Git Repository
+3. A `.Rproj` file is created
+4. Opens a clean R session in that folder
+
+---
+
+## Benefits of Using Projects
+
+- Isolates work in its own environment
+- Keeps paths relative (avoid hard-coded paths)
+- Better integration with Git
+- Useful for collaboration and reproducibility
+
+```r
+# bad
+read.csv("C:/Users/me/Desktop/data.csv")
+
+# good
+read.csv("data/data.csv")
+```
+
+---
+
+## R Workspace: What's in It?
+
+- Objects you create: variables, functions, models
+- Stored in memory **until you quit R**
+- Can be saved with `.RData` or `.RDS`
+
+```r
+x <- 42
+lm_model <- lm(mpg ~ wt, data = mtcars)
+ls()  # Lists objects in workspace
+```
+
+---
+
+## Workspace Files
+
+- `.RData`: Automatically saved workspace (discouraged in projects)
+- `.Rhistory`: Command history
+- You can choose whether to save the workspace on exit
+
+```r
+save.image()      # Saves entire workspace
+save(x, file = "x.RData")
+saveRDS(model, "model.rds")
+```
+
+---
+
+## Best Practices
+
+- Avoid saving workspace on exit (`.RData`)
+- Start scripts with clean sessions
+- Load only what you need
+- Use projects to organize work
+- Use `git` for Version control
+
+---
+
+## Summary
+
+| Topic         | Purpose                                 |
+|---------------|------------------------------------------|
+| RStudio Project | Organize code/data in one directory     |
+| R Workspace   | Environment holding your R objects       |
+| .RData/.RDS   | Save and reload objects selectively      |
+
+
+
+# Summary
+
+-   R is a statistical programming language widespread in Academia
+-   We analysed which are the main typologies of variables and functions
+-   We imported and manipulated datasets using R
+-   We performed some basic statistical analysis
+-   We visualised data with base and advanced R plots
+
+## Thank you for your attention!
+
+```{r, echo=FALSE}
+plot(qr_code("https:\\michelescandola.netlify.app"))
+```
