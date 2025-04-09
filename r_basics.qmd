@@ -1902,6 +1902,17 @@ ggplot(mtcars, aes(x = wt, y = mpg)) +
 
 ---
 
+## Practice!
+
+1.  Open the file "04-statistics.R" and follow the given steps.
+2.  Once completed, upload your exercise here: (https://forms.office.com/e/jjFAyzis4n)[link].
+3.  We will hold a session to review and correct the exercise together.
+
+```{r, echo = FALSE}
+plot(qr_code("https://forms.office.com/e/jjFAyzis4n"))
+```
+
+
 # RStudio Projects and the R Workspace
 
 ## What is an RStudio Project?
@@ -1989,7 +2000,10 @@ saveRDS(model, "model.rds")
 | R Workspace   | Environment holding your R objects       |
 | .RData/.RDS   | Save and reload objects selectively      |
 
+## Practice!
 
+1.  Open the file "05-rprojects.R" and follow the given steps.
+2.  We will hold a session to review and correct the exercise together.
 
 # Summary
 
@@ -2001,6 +2015,19 @@ saveRDS(model, "model.rds")
 
 ## Thank you for your attention!
 
+::: columns
+::: {.column width="50%"}
+My website:
 ```{r, echo=FALSE}
 plot(qr_code("https:\\michelescandola.netlify.app"))
+
 ```
+:::
+::: {.column width="50%"}
+Git-hub repository:
+```{r, echo=FALSE}
+plot(qr_code("https://github.com/michelescandola/r_basic"))
+```
+:::
+:::
+

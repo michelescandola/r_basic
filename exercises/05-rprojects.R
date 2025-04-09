@@ -18,9 +18,3 @@
 # Bonus Challenge:
 # - Plot a boxplot of len by supp using ggplot2
 # - Save the plot as a .png file in a "plots" folder
-
-# Optional Code Snippet:
-# library(ggplot2)
-# ggplot(ToothGrowth, aes(x = supp, y = len)) +
-#   geom_boxplot() +
-#   ggsave("plots/boxplot.png")
