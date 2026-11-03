@@ -2,9 +2,6 @@
 ## Name and Surname:
 ## PhD Course:
 ## ID (if any):
-## Mode of Attendance:
-# - In person [ ]
-# - Online [ ]
 
 # 1. Create a new RStudio Project in a new directory called "my_analysis"
 # 2. Inside the project:

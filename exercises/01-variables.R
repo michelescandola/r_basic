@@ -2,9 +2,6 @@
 ## Name and Surname:
 ## PhD Course:
 ## ID (if any):
-## Mode of Attendance:
-# - In person [ ]
-# - Online [ ]
 
 ### Exercise 1: Basic Variable Assignment
 # 1. Assign the value 10 to a variable named `x`.

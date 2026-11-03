@@ -73,7 +73,7 @@ GimmeMSD <- function(y,digits=3,na.rm=TRUE,se=FALSE){
 
 ## Why Use R as a PhD Student?
 
-::: columns
+::::: columns
 ::: {.column width="50%"}
 -   Free & Open-Source
 -   Interoperable
@@ -90,7 +90,7 @@ GimmeMSD <- function(y,digits=3,na.rm=TRUE,se=FALSE){
 -   Strong Academic Adoption
 -   Version Control & Collaboration
 :::
-:::
+:::::
 
 ## How to donwload R and its interface
 
@@ -104,7 +104,7 @@ The default R Interfaces on Mac and Linux is the Terminal.
 
 ## What R Studio is adding to R?
 
-::: columns
+::::: columns
 ::: {.column width="50%"}
 -   User-Friendly Interface
 -   Script Management
@@ -120,7 +120,7 @@ The default R Interfaces on Mac and Linux is the Terminal.
 -   Project Organization
 -   Shiny App Development
 :::
-:::
+:::::
 
 ## How to download R Studio and its inteface
 
@@ -146,7 +146,7 @@ The **tidyverse** is an opinionated collection of R packages designed for data s
 install.packages("tidyverse")
 ```
 
-::: columns
+::::: columns
 ::: {.column width="50%"}
 You can find an online book here: <https://r4ds.hadley.nz/>
 :::
@@ -156,7 +156,7 @@ You can find an online book here: <https://r4ds.hadley.nz/>
 plot(qr_code("https://r4ds.hadley.nz/"))
 ```
 :::
-:::
+:::::
 
 ## Simple difference between base R and tidyverse
 
@@ -281,7 +281,7 @@ You cannot use a number as first character.
 
 EXAMPLES:
 
-::: columns
+::::: columns
 ::: {.column width="50%"}
 -   `avgRT` `r fa(name = "check", fill = "green")`
 -   `_avrRT` `r fa(name = "check", fill = "green")`
@@ -295,7 +295,7 @@ EXAMPLES:
 -   `avg-RT` `r fa(name = "xmark", fill = "red")`
 -   `3avgRT` `r fa(name = "xmark", fill = "red")`
 :::
-:::
+:::::
 
 . . .
 
@@ -828,7 +828,7 @@ R has several types of operators for performing calculations and data manipulati
 **3. Logical Operators** (Used for Boolean logic)
 
 | Operator | Description              | Example (`x <- TRUE, y <- FALSE`) | Result  |
-|--------------|----------------|-----------------------------|--------------|
+|----------|--------------------------|-----------------------------------|---------|
 | `&`      | AND (element-wise)       | `x & y`                           | `FALSE` |
 | `&&`     | AND (first element only) | `x && y`                          | `FALSE` |
 | `|`      | OR (element-wise)        | `x | y`                           | `TRUE`  |
@@ -851,7 +851,7 @@ R has several types of operators for performing calculations and data manipulati
 **5. Special Operators** (Used for specific operations)
 
 | Operator | Description                    | Example                         |
-|----------------|----------------------------------------|----------------|
+|----------|--------------------------------|---------------------------------|
 | `%in%`   | Checks if value is in a vector | `3 %in% c(1, 2, 3, 4)` → `TRUE` |
 | `%*%`    | Matrix multiplication          | `A %*% B`                       |
 | `%/%`    | Integer division               | `10 %/% 3` $\rightarrow$ `3`    |
@@ -917,31 +917,31 @@ mean(x)
 
 **3. Logical and Comparison Functions**
 
-| Function   | Description                      | Example                       | Output             |
-|------------------|---------------------|-----------------|-----------------|
-| `all(x)`   | Checks if all values are `TRUE`  | `all(c(TRUE, TRUE))`          | `TRUE`             |
-| `any(x)`   | Checks if any value is `TRUE`    | `any(c(FALSE, TRUE))`         | `TRUE`             |
-| `is.na(x)` | Checks for `NA` values           | `is.na(c(1, NA, 3))`          | `FALSE TRUE FALSE` |
-| `which(x)` | Returns indices of `TRUE` values | `which(c(FALSE, TRUE, TRUE))` | `2 3`              |
+| Function | Description | Example | Output |
+|----|----|----|----|
+| `all(x)` | Checks if all values are `TRUE` | `all(c(TRUE, TRUE))` | `TRUE` |
+| `any(x)` | Checks if any value is `TRUE` | `any(c(FALSE, TRUE))` | `TRUE` |
+| `is.na(x)` | Checks for `NA` values | `is.na(c(1, NA, 3))` | `FALSE TRUE FALSE` |
+| `which(x)` | Returns indices of `TRUE` values | `which(c(FALSE, TRUE, TRUE))` | `2 3` |
 
 ##  {.smaller}
 
 **4. Character/String Functions**
 
-| Function                 | Description          | Example                            | Output          |
-|------------------|---------------------|-----------------|-----------------|
-| `nchar(x)`               | Number of characters | `nchar("hello")`                   | `5`             |
-| `toupper(x)`             | Convert to uppercase | `toupper("hello")`                 | `"HELLO"`       |
-| `tolower(x)`             | Convert to lowercase | `tolower("HELLO")`                 | `"hello"`       |
-| `substr(x, start, stop)` | Extract substring    | `substr("Hello", 2, 4)`            | `"ell"`         |
-| `paste(x, y, sep)`       | Concatenate strings  | `paste("Hello", "World", sep=" ")` | `"Hello World"` |
+| Function | Description | Example | Output |
+|----|----|----|----|
+| `nchar(x)` | Number of characters | `nchar("hello")` | `5` |
+| `toupper(x)` | Convert to uppercase | `toupper("hello")` | `"HELLO"` |
+| `tolower(x)` | Convert to lowercase | `tolower("HELLO")` | `"hello"` |
+| `substr(x, start, stop)` | Extract substring | `substr("Hello", 2, 4)` | `"ell"` |
+| `paste(x, y, sep)` | Concatenate strings | `paste("Hello", "World", sep=" ")` | `"Hello World"` |
 
 ##  {.smaller}
 
 **5. Data Manipulation Functions**
 
 | Function    | Description        | Example                   | Output         |
-|------------------|---------------------|-----------------|-----------------|
+|-------------|--------------------|---------------------------|----------------|
 | `length(x)` | Number of elements | `length(c(1,2,3))`        | `3`            |
 | `sort(x)`   | Sort elements      | `sort(c(3,1,2))`          | `1 2 3`        |
 | `rev(x)`    | Reverse elements   | `rev(c(1,2,3))`           | `3 2 1`        |
@@ -952,44 +952,44 @@ mean(x)
 
 **6. Control and Utility Functions**
 
-| Function                     | Description         | Example                      | Output        |
-|------------------|---------------------|-----------------|-----------------|
-| `seq(from, to, by)`          | Generate a sequence | `seq(1, 10, 2)`              | `1 3 5 7 9`   |
-| `rep(x, times)`              | Repeat values       | `rep(1:3, 2)`                | `1 2 3 1 2 3` |
-| `sample(x, size)`            | Random sample       | `sample(1:10, 5)`            | Varies        |
-| `ifelse(condition, yes, no)` | Conditional         | `ifelse(3 > 2, "Yes", "No")` | `"Yes"`       |
+| Function | Description | Example | Output |
+|----|----|----|----|
+| `seq(from, to, by)` | Generate a sequence | `seq(1, 10, 2)` | `1 3 5 7 9` |
+| `rep(x, times)` | Repeat values | `rep(1:3, 2)` | `1 2 3 1 2 3` |
+| `sample(x, size)` | Random sample | `sample(1:10, 5)` | Varies |
+| `ifelse(condition, yes, no)` | Conditional | `ifelse(3 > 2, "Yes", "No")` | `"Yes"` |
 
 ##  {.smaller}
 
 **7. `tidyverse` Data Manipulation Functions (`dplyr`)**
 
-| Function                                           | Description                     | Example                                    |
-|-----------------------|----------------------------|---------------------|
-| `filter(.data, condition)`                         | Subset rows based on conditions | `filter(df, age > 30)`                     |
-| `select(.data, columns)`                           | Choose specific columns         | `select(df, name, age)`                    |
-| `mutate(.data, new_col = expression)`              | Create or modify columns        | `mutate(df, age_10 = age + 10)`            |
-| `arrange(.data, column)`                           | Sort rows by column             | `arrange(df, desc(salary))`                |
-| `group_by(.data, column)`                          | Group data by a column          | `group_by(df, department)`                 |
-| `summarize(.data, new_col = summary_func(column))` | Compute summary statistics      | `summarize(df, avg_salary = mean(salary))` |
-| `rename(.data, new_name = old_name)`               | Rename columns                  | `rename(df, emp_name = name)`              |
-| `distinct(.data, column)`                          | Remove duplicate rows           | `distinct(df, city)`                       |
-| `count(.data, column)`                             | Count occurrences               | `count(df, gender)`                        |
+| Function | Description | Example |
+|----|----|----|
+| `filter(.data, condition)` | Subset rows based on conditions | `filter(df, age > 30)` |
+| `select(.data, columns)` | Choose specific columns | `select(df, name, age)` |
+| `mutate(.data, new_col = expression)` | Create or modify columns | `mutate(df, age_10 = age + 10)` |
+| `arrange(.data, column)` | Sort rows by column | `arrange(df, desc(salary))` |
+| `group_by(.data, column)` | Group data by a column | `group_by(df, department)` |
+| `summarize(.data, new_col = summary_func(column))` | Compute summary statistics | `summarize(df, avg_salary = mean(salary))` |
+| `rename(.data, new_name = old_name)` | Rename columns | `rename(df, emp_name = name)` |
+| `distinct(.data, column)` | Remove duplicate rows | `distinct(df, city)` |
+| `count(.data, column)` | Count occurrences | `count(df, gender)` |
 
 ##  {.smaller}
 
 **8. other important functions:**
 
-| Function        | Description                                     | Example Usage                        |
-|----------------|-------------------------|--------------------------------|
-| `ls()`          | List objects in the current environment         | `ls()`                               |
-| `setwd()`       | Set the working directory                       | `setwd("C:/path/to/directory")`      |
-| `getwd()`       | Get the current working directory               | `getwd()`                            |
-| `save()`        | Save objects to a file                          | `save(x, file = "x_data.RData")`     |
-| `save.image()`  | Save all objects in the environment to a file   | `save.image("my_workspace.RData")`   |
-| `help()`        | Get help on a function or topic                 | `help(ls)`                           |
-| `history()`     | View the command history of the current session | `history()`                          |
-| `savehistory()` | Save the command history to a file              | `savehistory("my_history.Rhistory")` |
-| `loadhistory()` | Load command history from a file                | `loadhistory("my_history.Rhistory")` |
+| Function | Description | Example Usage |
+|----|----|----|
+| `ls()` | List objects in the current environment | `ls()` |
+| `setwd()` | Set the working directory | `setwd("C:/path/to/directory")` |
+| `getwd()` | Get the current working directory | `getwd()` |
+| `save()` | Save objects to a file | `save(x, file = "x_data.RData")` |
+| `save.image()` | Save all objects in the environment to a file | `save.image("my_workspace.RData")` |
+| `help()` | Get help on a function or topic | `help(ls)` |
+| `history()` | View the command history of the current session | `history()` |
+| `savehistory()` | Save the command history to a file | `savehistory("my_history.Rhistory")` |
+| `loadhistory()` | Load command history from a file | `loadhistory("my_history.Rhistory")` |
 
 ## Practice!
 
@@ -1705,10 +1705,10 @@ ggplot(DATA, aes(y = Reaction, x = Days)) +
 
 ### What It Measures
 
-- **Strength and direction** of a linear relationship between two continuous variables.
-- Common metrics:
-  - `pearson`: parametric
-  - `spearman` or `kendall`: non-parametric
+-   **Strength and direction** of a linear relationship between two continuous variables.
+-   Common metrics:
+    -   `pearson`: parametric
+    -   `spearman` or `kendall`: non-parametric
 
 ### Real Dataset Example: `mtcars`
 
@@ -1720,9 +1720,9 @@ correlation::correlation(data = mtcars, select = c("wt", "mpg"))
 
 ### Assumptions
 
-- Linearity
-- Normal distribution of both variables (for Pearson)
-- No extreme outliers
+-   Linearity
+-   Normal distribution of both variables (for Pearson)
+-   No extreme outliers
 
 ### Visualization
 
@@ -1733,15 +1733,15 @@ abline(lm(mpg ~ wt, data = mtcars), col = "red")
 GGally::ggpairs( mtcars, columns = c(1, 6))
 ```
 
----
+------------------------------------------------------------------------
 
 ## T-Tests
 
 ### Types of T-Tests
 
-- One-sample
-- Two-sample (independent)
-- Paired
+-   One-sample
+-   Two-sample (independent)
+-   Paired
 
 ### Real Dataset Example: `ToothGrowth`
 
@@ -1754,9 +1754,9 @@ t.test(len ~ supp, data = ToothGrowth, var.equal = TRUE)
 
 ### Assumptions
 
-- Independent samples
-- Normally distributed data
-- Equal variances (for `var.equal = TRUE`)
+-   Independent samples
+-   Normally distributed data
+-   Equal variances (for `var.equal = TRUE`)
 
 ### Check Assumptions
 
@@ -1794,14 +1794,14 @@ ggplot(ToothGrowth, aes(y = len, x = supp))+
   theme_minimal()
 ```
 
----
+------------------------------------------------------------------------
 
 ## Wilcoxon Test
 
 ### When to Use
 
-- Non-parametric alternative to the t-test
-- When assumptions of t-test are violated (e.g., non-normal data)
+-   Non-parametric alternative to the t-test
+-   When assumptions of t-test are violated (e.g., non-normal data)
 
 ### Real Dataset Example: `ToothGrowth`
 
@@ -1811,19 +1811,18 @@ wilcox.test(len ~ supp, data = ToothGrowth)
 
 ### Assumptions
 
-- Continuous or ordinal data
-- Independent or paired depending on test
-- Similar shape of distributions
+-   Continuous or ordinal data
+-   Independent or paired depending on test
+-   Similar shape of distributions
 
-
----
+------------------------------------------------------------------------
 
 ## Linear Models (LM)
 
 ### What They Do
 
-- Fit linear relationship between predictors and outcome
-- `lm()` function in R
+-   Fit linear relationship between predictors and outcome
+-   `lm()` function in R
 
 ### Real Dataset Example: `mtcars`
 
@@ -1834,10 +1833,10 @@ summary(model)
 
 ### Assumptions
 
-- Linearity
-- Homoscedasticity
-- Normality of residuals
-- Independence of errors
+-   Linearity
+-   Homoscedasticity
+-   Normality of residuals
+-   Independence of errors
 
 ### Diagnostic Plots
 
@@ -1846,7 +1845,7 @@ par(mfrow = c(2, 2))
 plot(model)
 ```
 
----
+------------------------------------------------------------------------
 
 ## Model Inference
 
@@ -1856,8 +1855,8 @@ plot(model)
 summary(model)
 ```
 
-- p-values for hypothesis tests on coefficients
-- R-squared for model fit
+-   p-values for hypothesis tests on coefficients
+-   R-squared for model fit
 
 ### Confidence Intervals
 
@@ -1865,7 +1864,7 @@ summary(model)
 confint(model)
 ```
 
----
+------------------------------------------------------------------------
 
 ## Visualization: Linear Model
 
@@ -1889,62 +1888,61 @@ ggplot(mtcars, aes(x = wt, y = mpg)) +
   theme_minimal()
 ```
 
----
+------------------------------------------------------------------------
 
 ## Summary Table
 
-| Method         | Assumptions                                  | Inference Tools         |
-|----------------|----------------------------------------------|--------------------------|
-| Correlation    | Linearity, normality (Pearson)               | `cor.test()`             |
-| T-Test         | Normality, equal variance                    | `t.test()`, `var.test()` |
-| Wilcoxon       | None strict (non-parametric)                 | `wilcox.test()`          |
-| Linear Model   | Linearity, normality, homoscedasticity       | `lm()`, `summary()`      |
+| Method | Assumptions | Inference Tools |
+|----|----|----|
+| Correlation | Linearity, normality (Pearson) | `cor.test()` |
+| T-Test | Normality, equal variance | `t.test()`, `var.test()` |
+| Wilcoxon | None strict (non-parametric) | `wilcox.test()` |
+| Linear Model | Linearity, normality, homoscedasticity | `lm()`, `summary()` |
 
----
+------------------------------------------------------------------------
 
 ## Practice!
 
 1.  Open the file "04-statistics.R" and follow the given steps.
-2.  Once completed, upload your exercise here: (https://forms.office.com/e/jjFAyzis4n)[link].
+2.  Once completed, upload your exercise here: (https://forms.office.com/e/jjFAyzis4n)\[link\].
 3.  We will hold a session to review and correct the exercise together.
 
 ```{r, echo = FALSE}
 plot(qr_code("https://forms.office.com/e/jjFAyzis4n"))
 ```
 
-
 # RStudio Projects and the R Workspace
 
 ## What is an RStudio Project?
 
-- A **self-contained working directory** managed by RStudio
-- Contains:
-  - `.Rproj` file
-  - Script files, data, outputs
-- Promotes **reproducibility** and **organization**
+-   A **self-contained working directory** managed by RStudio
+-   Contains:
+    -   `.Rproj` file
+    -   Script files, data, outputs
+-   Promotes **reproducibility** and **organization**
 
----
+------------------------------------------------------------------------
 
 ## Creating an RStudio Project
 
-1. File > New Project
-2. Choose:
-   - New Directory
-   - Existing Directory
-   - Git Repository
-3. A `.Rproj` file is created
-4. Opens a clean R session in that folder
+1.  File \> New Project
+2.  Choose:
+    -   New Directory
+    -   Existing Directory
+    -   Git Repository
+3.  A `.Rproj` file is created
+4.  Opens a clean R session in that folder
 
----
+------------------------------------------------------------------------
 
 ## Benefits of Using Projects
 
-- Isolates work in its own environment
-- Keeps paths relative (avoid hard-coded paths)
-- Better integration with Git
-- Useful for collaboration and reproducibility
+-   Isolates work in its own environment
+-   Keeps paths relative (avoid hard-coded paths)
+-   Better integration with Git
+-   Useful for collaboration and reproducibility
 
-```r
+``` r
 # bad
 read.csv("C:/Users/me/Desktop/data.csv")
 
@@ -1952,53 +1950,53 @@ read.csv("C:/Users/me/Desktop/data.csv")
 read.csv("data/data.csv")
 ```
 
----
+------------------------------------------------------------------------
 
 ## R Workspace: What's in It?
 
-- Objects you create: variables, functions, models
-- Stored in memory **until you quit R**
-- Can be saved with `.RData` or `.RDS`
+-   Objects you create: variables, functions, models
+-   Stored in memory **until you quit R**
+-   Can be saved with `.RData` or `.RDS`
 
-```r
+``` r
 x <- 42
 lm_model <- lm(mpg ~ wt, data = mtcars)
 ls()  # Lists objects in workspace
 ```
 
----
+------------------------------------------------------------------------
 
 ## Workspace Files
 
-- `.RData`: Automatically saved workspace (discouraged in projects)
-- `.Rhistory`: Command history
-- You can choose whether to save the workspace on exit
+-   `.RData`: Automatically saved workspace (discouraged in projects)
+-   `.Rhistory`: Command history
+-   You can choose whether to save the workspace on exit
 
-```r
+``` r
 save.image()      # Saves entire workspace
 save(x, file = "x.RData")
 saveRDS(model, "model.rds")
 ```
 
----
+------------------------------------------------------------------------
 
 ## Best Practices
 
-- Avoid saving workspace on exit (`.RData`)
-- Start scripts with clean sessions
-- Load only what you need
-- Use projects to organize work
-- Use `git` for Version control
+-   Avoid saving workspace on exit (`.RData`)
+-   Start scripts with clean sessions
+-   Load only what you need
+-   Use projects to organize work
+-   Use `git` for Version control
 
----
+------------------------------------------------------------------------
 
 ## Summary
 
-| Topic         | Purpose                                 |
-|---------------|------------------------------------------|
-| RStudio Project | Organize code/data in one directory     |
-| R Workspace   | Environment holding your R objects       |
-| .RData/.RDS   | Save and reload objects selectively      |
+| Topic           | Purpose                             |
+|-----------------|-------------------------------------|
+| RStudio Project | Organize code/data in one directory |
+| R Workspace     | Environment holding your R objects  |
+| .RData/.RDS     | Save and reload objects selectively |
 
 ## Practice!
 
@@ -2015,19 +2013,21 @@ saveRDS(model, "model.rds")
 
 ## Thank you for your attention!
 
-::: columns
+::::: columns
 ::: {.column width="50%"}
 My website:
+
 ```{r, echo=FALSE}
 plot(qr_code("https:\\michelescandola.netlify.app"))
 
 ```
 :::
+
 ::: {.column width="50%"}
 Git-hub repository:
+
 ```{r, echo=FALSE}
 plot(qr_code("https://github.com/michelescandola/r_basic"))
 ```
 :::
-:::
-
+:::::

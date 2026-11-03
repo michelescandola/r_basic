@@ -2,9 +2,6 @@
 ## Name and Surname:
 ## PhD Course:
 ## ID (if any):
-## Mode of Attendance:
-# - In person [ ]
-# - Online [ ]
 
 getwd()
 setwd("C:/Users/UTENTE/Dropbox/CORSI/R_base/exercises")
@@ -15,8 +12,6 @@ setwd("C:/Users/UTENTE/Dropbox/CORSI/R_base/exercises")
 # 3. Print the first few rows of the data frame using the `head` function.
 
 # Your code here
-DATA <- read.csv("exercises/sample_data.csv")
-head(DATA)
 
 ### Exercise 2: Subsetting Data
 # 1. Import the CSV file `sample_data.csv` into a data frame named `data`.
@@ -25,18 +20,6 @@ head(DATA)
 # 4. Print the first few rows of `subset_data`.
 
 # Your code here
-DATA$age > 30
-
-subset_data <- DATA[DATA$age > 30,]
-
-DATA[DATA$age > 30,c("id", "salary")]
-
-library(tidyverse)
-library(dplyr)
-DATA %>%
-  filter(age > 30)
-
-head(subset_data)
 
 ### Exercise 3: Adding a New Column
 # 1. Import the CSV file `sample_data.csv` into a data frame named `data`.
@@ -47,27 +30,6 @@ head(subset_data)
 # 3. Print the first few rows of the updated data frame.
 
 # Your code here
-DATA$age_group <- NA
-
-DATA$age_group <- ifelse(
-  DATA$age < 18, "Child",
-  DATA$age_group
-)
-
-DATA$age_group <- ifelse(
-  DATA$age >= 18 & DATA$age <= 65, "Adult",
-  DATA$age_group
-)
-
-DATA$age_group <- ifelse(
-  DATA$age > 65, "Senior",
-  DATA$age_group
-)
-
-head(DATA)
-table(DATA$age_group)
-
-cut(DATA$age, breaks = c(0,18,65,100))
 
 ### Exercise 4: Aggregating Data
 # 1. Import the CSV file `sample_data.csv` into a data frame named `data`.
@@ -76,7 +38,6 @@ cut(DATA$age, breaks = c(0,18,65,100))
 # 4. Print the `mean_salary_by_age_group` data frame.
 
 # Your code here
-mean_salary_by_age_group <- aggregate(salary ~ age_group, FUN = mean, data = DATA )
 
 
 ### Exercise 5: 
@@ -87,9 +48,3 @@ mean_salary_by_age_group <- aggregate(salary ~ age_group, FUN = mean, data = DAT
 # 6. Remove the outliers from the salary column
 
 # Your code here
-library(readxl)
-
-DATA <- read_xlsx("exercises/sample_data.xlsx")
-head(DATA)
-str(DATA)
-summary(DATA)
