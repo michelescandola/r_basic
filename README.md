@@ -1,6 +1,6 @@
-# R Basics: Statistical Analysis
+# STATISTICAL ANALYSIS WITH R
 
-Teaching materials for **Using R for Statistical Analysis — Basic Level**, prepared by Michele Scandola for the PhD school of the University of Verona.
+Teaching materials for **STATISTICAL ANALYSIS WITH R**, prepared by Michele Scandola for the PhD school of the University of Verona.
 
 ## Start here
 
