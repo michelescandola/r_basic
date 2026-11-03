@@ -4,7 +4,5 @@
 .Ruserdata
 .Rprofile
 valutazioni/
-renv/
 exercises_done/
 chatGPT/
-renv.lock
