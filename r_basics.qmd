@@ -1207,12 +1207,6 @@ DATA <- DATA %>%
 filtered_data <- data %>% filter(column_name > value)
 ```
 
-## Practice!
-
-1.  Open the file "03-datasets.R" and follow the given steps.
-2.  Once completed, upload your exercise to the Moodle course page.
-3.  We will hold a session to review and correct the exercise together.
-
 ## Exploratory Data Analysis
 
 **Base R:**
@@ -1347,6 +1341,12 @@ nrow(DATA2)
 ```{r, echo = FALSE}
 DATA <- droplevels( DATA[,1:4] )
 ```
+
+## Practice!
+
+1.  Open the file "03-datasets.R" and follow the given steps.
+2.  Once completed, upload your exercise to the Moodle course page.
+3.  We will hold a session to review and correct the exercise together.
 
 ## Statistical Analysis
 

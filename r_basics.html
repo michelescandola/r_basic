@@ -10,7 +10,7 @@
   <meta name="generator" content="quarto-1.10.18">
 
   <meta name="author" content="Michele Scandola">
-  <meta name="dcterms.date" content="2026-11-03">
+  <meta name="dcterms.date" content="2026-11-12">
   <title>Using R for Statistical Analysis</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -215,7 +215,7 @@ Michele Scandola
     </div>
 </div>
 
-  <p class="date">2026-11-03</p>
+  <p class="date">2026-11-12</p>
 </section><section id="TOC">
 <nav role="doc-toc"> 
 <h2 id="toc-title">Outline</h2>
@@ -443,7 +443,7 @@ mean of x mean of y
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="" aria-label="1"></a>R.version.string</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "R version 4.5.2 (2025-10-31 ucrt)"</code></pre>
+<pre><code>[1] "R version 4.6.2 (2026-10-29 ucrt)"</code></pre>
 </div>
 </div>
 </div>
@@ -2182,13 +2182,13 @@ read.xport : function (file, ...)  </code></pre>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb168"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb168-1"><a href="" aria-label="1"></a><span class="co"># Check for missing values and quantiles</span></span>
 <span id="cb168-2"><a href="" aria-label="2"></a><span class="fu">summary</span>(DATA)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>    Reaction          Days       Subject             Group          
- Min.   :194.3   Min.   :0.0   Length:180         Length:180        
- 1st Qu.:255.4   1st Qu.:2.0   Class :character   Class :character  
- Median :288.7   Median :4.5   Mode  :character   Mode  :character  
- Mean   :298.5   Mean   :4.5                                        
- 3rd Qu.:336.8   3rd Qu.:7.0                                        
- Max.   :466.4   Max.   :9.0                                        </code></pre>
+<pre><code>    Reaction          Days          Subject          Group    
+ Min.   :194.3   Min.   :0.0   Length   :180   Length   :180  
+ 1st Qu.:255.4   1st Qu.:2.0   N.unique : 18   N.unique :  2  
+ Median :288.7   Median :4.5   N.blank  :  0   N.blank  :  0  
+ Mean   :298.5   Mean   :4.5   Min.nchar:  3   Min.nchar:  1  
+ 3rd Qu.:336.8   3rd Qu.:7.0   Max.nchar:  3   Max.nchar:  1  
+ Max.   :466.4   Max.   :9.0                                  </code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb170"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb170-1"><a href="" aria-label="1"></a><span class="fu">quantile</span>(DATA<span class="sc">$</span>Reaction)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -2412,14 +2412,6 @@ $ Group    &lt;chr&gt; "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A
 <span id="cb182-7"><a href="" aria-label="7"></a><span class="co"># Filter data based on certain conditions</span></span>
 <span id="cb182-8"><a href="" aria-label="8"></a>filtered_data <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> <span class="fu">filter</span>(column_name <span class="sc">&gt;</span> value)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-</section>
-<section id="practice-2" class="slide level2 scrollable">
-<h2>Practice!</h2>
-<ol type="1">
-<li class="fragment">Open the file “03-datasets.R” and follow the given steps.</li>
-<li class="fragment">Once completed, upload your exercise to the Moodle course page.</li>
-<li class="fragment">We will hold a session to review and correct the exercise together.</li>
-</ol>
 </section>
 <section id="exploratory-data-analysis" class="slide level2">
 <h2>Exploratory Data Analysis</h2>
@@ -2652,6 +2644,14 @@ W = 0.97074, p-value = 0.00078</code></pre>
 </div>
 </div>
 </div>
+</section>
+<section id="practice-2" class="slide level2 scrollable">
+<h2>Practice!</h2>
+<ol type="1">
+<li class="fragment">Open the file “03-datasets.R” and follow the given steps.</li>
+<li class="fragment">Once completed, upload your exercise to the Moodle course page.</li>
+<li class="fragment">We will hold a session to review and correct the exercise together.</li>
+</ol>
 </section>
 <section id="statistical-analysis" class="slide level2">
 <h2>Statistical Analysis</h2>
@@ -2903,20 +2903,13 @@ alternative hypothesis: true location shift is not equal to 0</code></pre>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb249"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb249-1"><a href="" aria-label="1"></a><span class="co"># Check for missing values and quantiles</span></span>
 <span id="cb249-2"><a href="" aria-label="2"></a><span class="fu">summary</span>(DATA)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>       X             Reaction          Days        Subject     
- Min.   :  1.00   Min.   :194.3   Min.   :0.0   Min.   :308.0  
- 1st Qu.: 45.75   1st Qu.:255.4   1st Qu.:2.0   1st Qu.:331.0  
- Median : 90.50   Median :288.7   Median :4.5   Median :336.0  
- Mean   : 90.50   Mean   :298.5   Mean   :4.5   Mean   :341.3  
- 3rd Qu.:135.25   3rd Qu.:336.8   3rd Qu.:7.0   3rd Qu.:352.0  
- Max.   :180.00   Max.   :466.4   Max.   :9.0   Max.   :372.0  
-    Group          
- Length:180        
- Class :character  
- Mode  :character  
-                   
-                   
-                   </code></pre>
+<pre><code>       X             Reaction          Days        Subject            Group    
+ Min.   :  1.00   Min.   :194.3   Min.   :0.0   Min.   :308.0   Length   :180  
+ 1st Qu.: 45.75   1st Qu.:255.4   1st Qu.:2.0   1st Qu.:331.0   N.unique :  2  
+ Median : 90.50   Median :288.7   Median :4.5   Median :336.0   N.blank  :  0  
+ Mean   : 90.50   Mean   :298.5   Mean   :4.5   Mean   :341.3   Min.nchar:  1  
+ 3rd Qu.:135.25   3rd Qu.:336.8   3rd Qu.:7.0   3rd Qu.:352.0   Max.nchar:  1  
+ Max.   :180.00   Max.   :466.4   Max.   :9.0   Max.   :372.0                  </code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb251"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb251-1"><a href="" aria-label="1"></a><span class="fu">quantile</span>(DATA<span class="sc">$</span>Reaction)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -3932,10 +3925,10 @@ ratio of variances
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb360"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb360-1"><a href="" aria-label="1"></a><span class="fu">wilcox.test</span>(len <span class="sc">~</span> supp, <span class="at">data =</span> ToothGrowth)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
-    Wilcoxon rank sum test with continuity correction
+    Wilcoxon rank sum exact test
 
 data:  len by supp
-W = 575.5, p-value = 0.06449
+W = 575.5, p-value = 0.06366
 alternative hypothesis: true location shift is not equal to 0</code></pre>
 </div>
 </div>
